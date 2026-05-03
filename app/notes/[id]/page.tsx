@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
   const { id } = await params;
   const note = await fetchNoteById(id);
 
-   return {
+  return {
     title: `Note: ${note.title}`,
     description: note.content.slice(0, 30),
     openGraph: {
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/notes/${id}`,
       images: [
         {
-          url: `${process.env.NEXT_PUBLIC_BASE_URL}/notehub-og-not-found.jpg`,
+          url: `${process.env.NEXT_PUBLIC_BASE_URL}/notehub-og-meta.jpg`,
           width: 1200,
           height: 630,
           alt: `Note: ${note.title}`,
@@ -28,7 +28,6 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
       ],
     },
   };
-}
 }
 
 export default async function NoteDetailsPage({ params }: NoteDetailsPageProps) {

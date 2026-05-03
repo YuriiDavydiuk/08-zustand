@@ -1,6 +1,6 @@
 'use client';
 
-import css from './Modal.module.css'
+import css from './Modal.module.css';
 
 interface Props {
   children: React.ReactNode;

@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import css from './page.module.css';
 import { Metadata } from 'next';
@@ -10,7 +9,14 @@ export const metadata: Metadata = {
     title: 'NoteHub - Page Not Found',
     description:
       'The requested page could not be found. Visit the NoteHub homepage to access your notes and stay productive.',
-    images: [{ url: '/notehub-og-not-found.jpg' }],
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/notehub-og-not-found.jpg`,
+        width: 1200,
+        height: 630,
+        alt: 'NoteHub - Page Not Found',
+      },
+    ],
   },
 };
 

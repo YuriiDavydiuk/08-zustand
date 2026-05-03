@@ -1,92 +1,118 @@
+'use client';
 import css from './NoteForm.module.css';
-import { Formik, Form, Field, type FormikHelpers, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+
+import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createNote } from '@/lib/api';
 
-interface NoteFormProps {
-  onClose: () => void;
-}
+import { useNoteDraftStore } from '@/lib/store/noteStore';
+import { useState } from 'react';
+
+type Tag = 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
 
 interface FormValues {
   title: string;
   content: string;
-  tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
+  tag: Tag;
 }
 
-const initialValues: FormValues = {
+const initialDraft: FormValues = {
   title: '',
   content: '',
   tag: 'Todo',
 };
 
-const OrderFormSchema = Yup.object().shape({
-  title: Yup.string()
-    .min(3, 'Title too short')
-    .max(50, 'Title too long')
-    .required('This is a required field!'),
-  content: Yup.string().max(500, 'Content too long'),
-  tag: Yup.string().oneOf(['Todo', 'Work', 'Personal', 'Meeting', 'Shopping']).required(),
-});
+export default function NoteForm() {
+  const draft = useNoteDraftStore(state => state.draft);
+  const setDraft = useNoteDraftStore(state => state.setDraft);
+  const clearDraft = useNoteDraftStore(state => state.clearDraft);
 
-export default function NoteForm({ onClose }: NoteFormProps) {
   const queryClient = useQueryClient();
+  const router = useRouter();
+
+  const [formData, setFormData] = useState<FormValues>(draft ?? initialDraft);
 
   const mutation = useMutation({
     mutationFn: createNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
-      onClose();
+      clearDraft();
+      router.back();
     },
   });
 
-  const handleSubmit = (values: FormValues, helpers: FormikHelpers<FormValues>) => {
-    // console.log("Submit", values);
-    mutation.mutate(values, {
-      onSuccess: () => helpers.resetForm(),
-    });
+  const handleChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const updated = { ...formData, [event.target.name]: event.target.value };
+    setFormData(updated);
+    setDraft(updated);
+  };
+
+  const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    mutation.mutate(formData);
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={OrderFormSchema}
-      onSubmit={handleSubmit}
-    >
-      <Form className={css.form}>
-        <div className={css.formGroup}>
-          <label htmlFor="title">Title</label>
-          <Field id="title" type="text" name="title" className={css.input} />
-          <ErrorMessage name="title" component="span" className={css.error} />
-        </div>
+    <form className={css.form} onSubmit={handleSubmit}>
+      <div className={css.formGroup}>
+        <label htmlFor="title">Title</label>
+        <input
+          id="title"
+          type="text"
+          name="title"
+          className={css.input}
+          onChange={handleChange}
+          value={formData.title}
+          required
+          minLength={3}
+          maxLength={50}
+        />
+      </div>
 
-        <div className={css.formGroup}>
-          <label htmlFor="content">Content</label>
-          <Field as="textarea" id="content" name="content" rows={8} className={css.textarea} />
-          <ErrorMessage name="content" component="span" className={css.error} />
-        </div>
+      <div className={css.formGroup}>
+        <label htmlFor="content">Content</label>
+        <textarea
+          id="content"
+          name="content"
+          rows={8}
+          className={css.textarea}
+          onChange={handleChange}
+          value={formData.content}
+          required
+          maxLength={500}
+        />
+      </div>
 
-        <div className={css.formGroup}>
-          <label htmlFor="tag">Tag</label>
-          <Field as="select" id="tag" name="tag" className={css.select}>
-            <option value="Todo">Todo</option>
-            <option value="Work">Work</option>
-            <option value="Personal">Personal</option>
-            <option value="Meeting">Meeting</option>
-            <option value="Shopping">Shopping</option>
-          </Field>
-          <ErrorMessage name="tag" component="span" className={css.error} />
-        </div>
+      <div className={css.formGroup}>
+        <label htmlFor="tag">Tag</label>
+        <select
+          id="tag"
+          name="tag"
+          className={css.select}
+          onChange={handleChange}
+          value={formData.tag}
+        >
+          <option value="Todo">Todo</option>
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Meeting">Meeting</option>
+          <option value="Shopping">Shopping</option>
+        </select>
+      </div>
 
-        <div className={css.actions}>
-          <button type="button" className={css.cancelButton} onClick={onClose}>
-            Cancel
-          </button>
-          <button type="submit" className={css.submitButton} disabled={mutation.isPending}>
-            {mutation.isPending ? 'Creating...' : 'Create note'}
-          </button>
-        </div>
-      </Form>
-    </Formik>
+      <div className={css.actions}>
+        <button className={css.cancelButton} onClick={() => router.back()}>
+          Cancel
+        </button>
+        <button type="submit" className={css.submitButton} disabled={mutation.isPending}>
+          {mutation.isPending ? 'Creating...' : 'Create note'}
+        </button>
+      </div>
+    </form>
   );
 }

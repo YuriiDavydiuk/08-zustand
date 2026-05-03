@@ -6,10 +6,10 @@ interface NoteResponse {
   totalPages: number;
 }
 
-interface NewNote {
+export interface NewNote {
   title: string;
   content: string;
-  tag: string;
+  tag: 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
 }
 
 const API_TOKEN = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;

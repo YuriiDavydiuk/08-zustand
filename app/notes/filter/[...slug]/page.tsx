@@ -18,10 +18,10 @@ export async function generateMetadata({ params }: NotesFilterPageProps): Promis
     openGraph: {
       title: `Notes filtered by: ${tag}`,
       description: `Browse notes tagged with "${tag}"`,
-      url: `http://localhost:3000/notes/filter/${tag}`,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/notes/filter/${tag}`,
       images: [
         {
-          url: '/notehub-og-not-found.jpg',
+          url: `${process.env.NEXT_PUBLIC_BASE_URL}/notehub-og-meta.jpg`,
           width: 1200,
           height: 630,
           alt: `Notes tagged with ${tag}`,
