@@ -1,3 +1,4 @@
+'use client';
 import { useRouter } from 'next/navigation';
 import ModalCreate from '@/components/ModalCreate/ModalCreate';
 import NoteForm from '@/components/NoteForm/NoteForm';
