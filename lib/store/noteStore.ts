@@ -2,8 +2,14 @@ import { create } from 'zustand';
 import { NewNote } from '@/lib/api';
 import { persist } from 'zustand/middleware';
 
+const initialDraft: NewNote = {
+  title: '',
+  content: '',
+  tag: 'Todo',
+};
+
 interface NoteDraftStore {
-  draft: NewNote | null;
+  draft: NewNote;
   setDraft: (note: NewNote) => void;
   clearDraft: () => void;
 }
@@ -11,10 +17,13 @@ interface NoteDraftStore {
 export const useNoteDraftStore = create<NoteDraftStore>()(
   persist(
     set => ({
-      draft: null,
+      draft: initialDraft,
       setDraft: note => set(() => ({ draft: note })),
-      clearDraft: () => set(() => ({ draft: null })),
+      clearDraft: () => set(() => ({ draft: initialDraft })),
     }),
-    { name: 'note-draft' }
+    {
+      name: 'note-draft',
+      partialize: state => ({ draft: state.draft }),
+    }
   )
 );

@@ -10,10 +10,10 @@ export const metadata: Metadata = {
     title: 'Create Note - NoteHub',
     description:
       'Create a new note in NoteHub. Add a title, content and tag to organize your thoughts.',
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/notes/action/create`,
+    url: 'https://08-zustand-ten-green.vercel.app/notes/action/create',
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/notehub-og-meta.jpg`,
+        url: 'https://08-zustand-ten-green.vercel.app/notehub-og-meta.jpg',
         width: 1200,
         height: 630,
         alt: 'Create Note - NoteHub',

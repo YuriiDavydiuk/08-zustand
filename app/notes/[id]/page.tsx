@@ -17,10 +17,10 @@ export async function generateMetadata({ params }: NoteDetailsPageProps): Promis
     openGraph: {
       title: `Note: ${note.title}`,
       description: note.content.slice(0, 30),
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/notes/${id}`,
+      url: `https://08-zustand-ten-green.vercel.app/notes/${id}`,
       images: [
         {
-          url: `${process.env.NEXT_PUBLIC_BASE_URL}/notehub-og-meta.jpg`,
+          url: `https://08-zustand-ten-green.vercel.app/notehub-og-meta.jpg`,
           width: 1200,
           height: 630,
           alt: `Note: ${note.title}`,

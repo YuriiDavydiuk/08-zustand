@@ -106,7 +106,7 @@ export default function NoteForm() {
       </div>
 
       <div className={css.actions}>
-        <button className={css.cancelButton} onClick={() => router.back()}>
+        <button type="button" className={css.cancelButton} onClick={() => router.back()}>
           Cancel
         </button>
         <button type="submit" className={css.submitButton} disabled={mutation.isPending}>
